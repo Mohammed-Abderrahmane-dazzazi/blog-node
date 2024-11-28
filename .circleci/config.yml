@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: Install npm dependencies
-          command: 
+          command: npm install express
 
   build_docker_image:
     docker:
