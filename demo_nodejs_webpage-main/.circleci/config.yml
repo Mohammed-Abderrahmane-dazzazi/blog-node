@@ -1,30 +1,34 @@
-version: 2.1 
+version: 2.1
+
 jobs:
- build_test: 
-  docker:
-   - image: circleci/node:12
-   steps:
-    - checkout
-    - run:
-        name: Install npm dependencies
-        command: |
-          npm install --save
- build_docker_image:
-  docker:
-   - image: circleci/node:12
-  steps:
-    - checkout
-    - setup_remote_docker: 
-        docker_layer_caching: false
-    - run:
-        name: Build Docker image
-        command: |
-	        docker build -t blog-node -t mad101/blog-node:latest.
-          echo $DOCKER_PASSWORD | docker login -u mad101 --password-stdin
-          docker push mad101/blog-node:latest
+  build_test:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run:
+          name: Install npm dependencies
+          command: npm install --save
+
+  build_docker_image:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: false
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t blog-node -t mad101/blog-node:latest .
+            echo $DOCKER_PASSWORD | docker login -u mad101 --password-stdin
+            docker push mad101/blog-node:latest
 
 workflows:
-  build_test:
+  version: 2
+  build_and_deploy:
     jobs:
       - build_test
-      - build_docker_image
+      - build_docker_image:
+          requires:
+            - build_test
