@@ -1,5 +1,5 @@
 
-FROM node:alpine
+FROM node:18-alpine
 COPY ./ ./
 RUN npm cache clean --force
 RUN npm install --legacy-peer-deps --loglevel verbose
